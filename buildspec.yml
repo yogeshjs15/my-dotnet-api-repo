@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 6.0
+
+  pre_build:
+    commands:
+      - echo "Restoring dependencies"
+      - cd sample-api
+      - dotnet restore
+
+  build:
+    commands:
+      - echo "Publishing application"
+      - dotnet publish -c Release -o publish
+
+  post_build:
+    commands:
+      - echo "Preparing artifacts"
+      - cd ..
+      - mkdir artifact
+      - cp -r sample-api/publish/* artifact/
+      - cp appspec.yml artifact/
+      - cp -r scripts artifact/
+      - ls -la artifact
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: artifact
